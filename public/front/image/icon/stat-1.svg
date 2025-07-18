@@ -1,0 +1,35 @@
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="50" height="50" fill="#F5F5F5" />
+    <g id="MacBook Pro 16&#34; - 2" clip-path="url(#clip0_0_1)">
+        <rect width="1728" height="7662" transform="translate(-269 -1001)" fill="#061545" />
+        <g id="Frame 24">
+            <g id="Frame 18" filter="url(#filter0_b_0_1)">
+                <g id="Icon">
+                    <g id="Frame 17">
+                        <path id="Vector" fill-rule="evenodd" clip-rule="evenodd"
+                            d="M44.1376 38.2752L41.3762 41.0367L42.5306 42.191H39.0448V10.9552H7.80896V7.46944L8.96333 8.62381L11.7248 5.86238L5.86238 0L0 5.86238L2.76143 8.62381L3.9158 7.46944V46.0842H42.5306L41.3762 47.2386L44.1376 50L50 44.1376L44.1376 38.2752ZM35.1516 28.6555L21.6161 42.191H16.0933L35.1516 23.1326V28.6555ZM35.1516 34.1784V42.191H27.139L35.1516 34.1784ZM7.8316 28.3839L21.3671 14.8483H26.89L7.80896 33.9067V28.3839H7.8316ZM15.8443 14.8483L7.8316 22.861V14.8483H15.8443ZM7.8316 39.407L32.3902 14.8483H35.1516V17.6098L10.593 42.1684H7.8316V39.407Z"
+                            fill="white" />
+                        <path id="Vector_2" fill-rule="evenodd" clip-rule="evenodd"
+                            d="M42.9607 10.9552H46.8538V3.14624H39.0449V7.0394H42.9607V10.9552Z" fill="#00D8FF" />
+                        <path id="Vector_3" d="M46.8538 14.8484H42.9606V22.6573H46.8538V14.8484Z" fill="#00D8FF" />
+                        <path id="Vector_4" d="M46.8538 26.5732H42.9606V34.3821H46.8538V26.5732Z" fill="#00D8FF" />
+                        <path id="Vector_5" d="M23.4269 3.14624H15.618V7.0394H23.4269V3.14624Z" fill="#00D8FF" />
+                        <path id="Vector_6" d="M35.1516 3.14624H27.3427V7.0394H35.1516V3.14624Z" fill="#00D8FF" />
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <filter id="filter0_b_0_1" x="-102.794" y="-73.7938" width="255.588" height="323.588"
+            filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feGaussianBlur in="BackgroundImageFix" stdDeviation="13.8969" />
+            <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_0_1" />
+            <feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur_0_1" result="shape" />
+        </filter>
+        <clipPath id="clip0_0_1">
+            <rect width="1728" height="7662" fill="white" transform="translate(-269 -1001)" />
+        </clipPath>
+    </defs>
+</svg>

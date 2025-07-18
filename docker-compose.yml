@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  innoweek:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: innoweek-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+      # - ./local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - innoweek-network
+
+  webserver:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: innoweek-webserver
+    restart: unless-stopped
+    ports:
+      - "85:80"
+    volumes:
+      - .:/var/www
+    networks:
+      - innoweek-network
+
+  db:
+    image: postgres:13
+    container_name: innoweek-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - innoweek-network
+  admin:
+    image: adminer
+    restart: always
+    depends_on:
+        - db
+    ports:
+        - 8085:8080
+    networks:
+        - innoweek-network
+
+networks:
+  innoweek-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
