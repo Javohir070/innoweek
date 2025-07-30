@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserApiController extends Controller
 {
@@ -46,5 +48,30 @@ class UserApiController extends Controller
         return [
             'message' => 'You have successfully logged out and the token was successfully deleted',
         ];
+    }
+
+    
+
+    public function ChangePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return _sendError(422, "Ma'lumotlarda xatolik bor", $validator->messages());
+        }
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return _sendError(401, "Joriy parol noto‘g‘ri.");
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return _sendResponse(200, "Parol muvaffaqiyatli o‘zgartirildi.");
     }
 }

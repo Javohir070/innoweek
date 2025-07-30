@@ -34,12 +34,15 @@ Route::group(['prefix' => 'v1.0'], function () {
         Route::post('/login/validate', 'loginValidate');
         Route::post('/login/complete', 'login');
 
+        Route::post('/user/login', 'loginUser');
+
         Route::get('/json/countries', 'GetCountryList');
         Route::get('/json/profession', 'GetProfessionsList');
     });
 
     Route::controller(UserApiController::class)->group(function () {
         Route::post('/user/me', 'GetUserInfo');
+        Route::post('/user/change-password', 'ChangePassword');
         Route::post('/logout', 'logout');
 
     });

@@ -312,7 +312,7 @@
                         <p>{{ $item->description }}</p>
                       </div>
                       <div class="schedule-bottom">
-                        {{-- <a href="javascript::void(0);" onclick="storeEventMember({{ $item->id }})" class="theme-btn">{{ __('site.Registration.Participation')}}<i class="fas fa-arrow-right"></i></a> --}}
+                        <a href="javascript::void(0);" onclick="storeEventMember({{ $item->id }})" class="theme-btn">{{ __('site.Registration.Participation')}}<i class="fas fa-arrow-right"></i></a>
                       </div>
                       {{-- speakers here --}}
                     </div>

@@ -122,6 +122,17 @@
   </div>
 @endisset
 
+@isset($GalleryID)
+  <div class="edit-delete-action">
+    <a class="me-2 p-2" href="{{ route('admin.gallery.info', ['data_id'=> $id ]) }}">
+      <i data-feather="edit" class="feather-edit"></i>
+    </a>
+    <a class="confirm-text p-2" href="{{ route('admin.gallery.destroy', ['data_id'=> $id ]) }}">
+      <i data-feather="trash-2" class="feather-trash-2"></i>
+    </a>
+  </div>
+@endisset
+
 @isset($InnoScheduleID)
   <div class="edit-delete-action">
     <a class="me-2 p-2" href="{{ route('admin.schedules.info', ['data_id'=> $id ]) }}">

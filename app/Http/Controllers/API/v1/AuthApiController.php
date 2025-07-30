@@ -22,14 +22,14 @@ use Illuminate\Support\Facades\Mail;
 class AuthApiController extends Controller
 {
     private const _SMS_TOKEN = "c1ed1023-a481-4155-b892-11d5bd1bb145";
-    protected  $access_code;
+    protected $access_code;
 
     public function SendSMSVerify($phone)
     {
         $token = self::_SMS_TOKEN;
 
         $verify_code = rand(100000, 999999);
-     
+
         if (!empty($token)) {
             $smsBody = [
                 'message' => [
@@ -91,7 +91,7 @@ class AuthApiController extends Controller
                 $data = User::where([['email', $phoneOrEmail]])->first();
                 if ($data) {
                     $verify_code = rand(100000, 999999);
-                    
+
                     // Tasdiqlash kodini foydalanuvchiga email orqali yuborish
                     Mail::to($phoneOrEmail)->send(new \App\Mail\RegisterMail($verify_code));
 
@@ -99,14 +99,13 @@ class AuthApiController extends Controller
                         'auth_key' => Crypt::encrypt($verify_code)
                     ];
                     return _sendResponse(201, 'tasdiqlash kodi yuborildi...', $data);
-                }
-                else {
+                } else {
                     return _sendError(404, "Foydalanuvchi topilmadi");
                 }
             } else {
                 // Foydalanuvchini telefon orqali qidirish
                 $data = User::where([['phone', $phoneOrEmail]])->first();
-                
+
                 if ($data) {
                     $sentSMS = self::SendSMSVerify($phoneOrEmail);
                     if ($sentSMS) {
@@ -119,7 +118,7 @@ class AuthApiController extends Controller
                     return _sendError(404, "Foydalanuvchi topilmadi");
                 }
             }
-        } catch (\Exception  $ex) {
+        } catch (\Exception $ex) {
             return _sendError(500, "Xatolik yuz berdi." . $ex->getMessage(), $ex->getTrace());
         }
     }
@@ -147,7 +146,7 @@ class AuthApiController extends Controller
             if ($validator->fails()) {
                 return _sendError(422, "Ma'lumotlarda xatolik mavjud", $validator->messages());
             }
-            
+
             // Email yoki telefon ekanligini tekshirish
             $phoneOrEmail = $inputs['phone_or_email'];
             if ($inputs['phone_or_email'] == '900061312' && $inputs['access_code'] == 323212) {
@@ -162,7 +161,7 @@ class AuthApiController extends Controller
                     ]);
                 }
             }
-    
+
             if (Crypt::decrypt($inputs['auth_key']) == $inputs['access_code']) {
                 if (filter_var($phoneOrEmail, FILTER_VALIDATE_EMAIL)) {
                     // Foydalanuvchini email orqali qidirish
@@ -187,11 +186,10 @@ class AuthApiController extends Controller
                         ]);
                     }
                 }
-            }
-            else {
+            } else {
                 return _sendError(422, "Tasdiqlash kodi xato kiritildi.");
             }
-        } catch (\Exception  $ex) {
+        } catch (\Exception $ex) {
             return _sendError(500, "Xatolik yuz berdi." . $ex->getMessage(), $ex->getTrace());
         }
     }
@@ -241,8 +239,8 @@ class AuthApiController extends Controller
                 return _sendResponse(201, 'tasdiqlash kodi yuborildi...', $data);
             }
 
-        } catch (\Exception  $ex) {
-            return _sendError(500, "Xatolik yuz berdi.".$ex->getMessage(), $ex->getTrace());
+        } catch (\Exception $ex) {
+            return _sendError(500, "Xatolik yuz berdi." . $ex->getMessage(), $ex->getTrace());
         }
     }
 
@@ -258,6 +256,7 @@ class AuthApiController extends Controller
                 'phone' => 'string|max:255|unique:users',
                 'auth_key' => 'required|string',
                 'access_code' => 'required|string',
+                'password' => 'required|string|min:8|confirmed',
             ]);
 
             if ($validator->fails()) {
@@ -283,7 +282,9 @@ class AuthApiController extends Controller
             $data->birth_date = isset($inputs['birth_date']) ? Carbon::parse($inputs['birth_date']) : null;
             $data->email = $inputs['email'] ?? null;
             $data->phone = $inputs['phone'] ?? null;
-            $data->password = Hash::make("@innoGFuest@102$#!");
+            $data->position = $inputs['position'] ?? null;
+            $data->company_name = $inputs['company_name'] ?? null;
+            $data->password = Hash::make($inputs['password']);
             $data->status = 'active';
             $data->confirmed = true;
             //$data->blocked = $inputs['blocked'];
@@ -301,16 +302,66 @@ class AuthApiController extends Controller
             $userticket->save();
 
             $token = $data->createToken('auth_token')->plainTextToken;
-            
+
             return _sendResponse(200, 'Successfully Registerated', [
                 'access_token' => $token,
                 'token_type' => 'Bearer'
             ]);
 
-        } catch (\Exception  $ex) {
+        } catch (\Exception $ex) {
             return _sendError(500, "Xatolik yuz berdi." . $ex->getMessage(), $ex->getTrace());
         }
     }
+
+    public function loginUser(Request $request)
+    {
+        try {
+            $inputs = $request->all();
+
+            $rules = [
+                'phone_or_email' => [
+                    'required',
+                    'string',
+                    function ($attribute, $value, $fail) {
+                        if (!filter_var($value, FILTER_VALIDATE_EMAIL) && !preg_match('/^9\d{8}$/', $value)) {
+                            $fail($attribute . ' maydoni to\'g\'ri email yoki telefon raqam formatida bo\'lishi kerak.');
+                        }
+                    }
+                ],
+                'password' => 'required|string',
+            ];
+
+            $validator = Validator::make($inputs, $rules);
+            if ($validator->fails()) {
+                return _sendError(422, "Ma'lumotlarda xatolik mavjud", $validator->messages());
+            }
+
+            $phoneOrEmail = $inputs['phone_or_email'];
+            $password = $inputs['password'];
+
+            // Foydalanuvchini topish
+            $user = filter_var($phoneOrEmail, FILTER_VALIDATE_EMAIL)
+                ? User::where('email', $phoneOrEmail)->first()
+                : User::where('phone', $phoneOrEmail)->first();
+
+            if (!$user || !Hash::check($password, $user->password)) {
+                return _sendError(401, 'Login yoki parol noto‘g‘ri.');
+            }
+
+            // Token yaratish
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return _sendResponse(200, 'Muvaffaqiyatli tizimga kirildi', [
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'data' => $user
+            ]);
+
+        } catch (\Exception $ex) {
+            return _sendError(500, "Xatolik yuz berdi: " . $ex->getMessage(), $ex->getTrace());
+        }
+    }
+
 
 
     public function GetCountryList(Request $request)
@@ -333,7 +384,7 @@ class AuthApiController extends Controller
         try {
             $inputs = $request->all();
             $limit = $inputs['limit'] ?? 300;
-            
+
             $data = Profession::select('id', 'name_uz as name')->where([['status', 'active']])->orderBy('id', 'ASC')->paginate($limit);
             return response()->json(new GetDataCollection($data), 201);
             //return _sendResponse(201, $message, $data);

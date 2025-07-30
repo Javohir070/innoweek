@@ -119,7 +119,7 @@ class UserController extends Controller
             else {
                 $dataQuery[] = ['phone', 'LIKE', '%' . $inputs['phone'] . '%'];
             }
-            
+
             $data = User::where($dataQuery)->first() ?? new User;
             $rules = [
                 'first_name' => 'required|string|max:30', //|unique' . !empty($inputs['id']) ? ':news_categories,name_uz,' . $inputs['id'] : '',
@@ -237,6 +237,8 @@ class UserController extends Controller
         }
     }
 
+
+    // Store event member
     public function storeEventMember(Request $request)
     {
         try {
@@ -275,7 +277,7 @@ class UserController extends Controller
                 if (!empty($userEvent)) {
                     return _sendError(422, trans("site.Registration.You already registered"));
                 }
-                
+
                 $userEvent = new EventMember;
                 $userEvent->user_id = $userData->id;
                 $userEvent->event_id = $inputs['event_id'];
@@ -289,6 +291,6 @@ class UserController extends Controller
             return _sendError(500, "Xatolik yuz berdi", $ex->getMessage());
         }
     }
- 
-    
+
+
 }
