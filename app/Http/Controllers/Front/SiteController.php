@@ -21,33 +21,33 @@ class SiteController extends Controller
     public function index(Request $request)
     {
         $lang = \App::getLocale();
-        $countries = Country::select('id', 'name_'.$lang.' as name')->where([['status', 'active']])->orderBy('id', 'ASC')->get();
-        $professions = Profession::select('id', 'name_'.$lang.' as name')->where([['status', 'active']])->orderBy('id', 'ASC')->get();
-        $schedule_day_1 = Schedule::select('id', 'title_'.$lang.' as title','description_' . $lang . ' as description', 'date', 'address_'.$lang.' as address', 'started_at', 'stopped_at')
+        $countries = Country::select('id', 'name_' . $lang . ' as name')->where([['status', 'active']])->orderBy('id', 'ASC')->get();
+        $professions = Profession::select('id', 'name_' . $lang . ' as name')->where([['status', 'active']])->orderBy('id', 'ASC')->get();
+        $schedule_day_1 = Schedule::select('id', 'title_' . $lang . ' as title', 'description_' . $lang . ' as description', 'date', 'address_' . $lang . ' as address', 'started_at', 'stopped_at')
             ->where([['archive_id', 7], ['status', 'active']])->orderBy('id', 'ASC')
             ->whereDate('date', '=', \Carbon\Carbon::parse('14.11.2024'))
             ->get();
 
-        $schedule_day_2 = Schedule::select('id', 'title_'.$lang.' as title','description_' . $lang . ' as description', 'date', 'address_'.$lang.' as address', 'started_at', 'stopped_at')
+        $schedule_day_2 = Schedule::select('id', 'title_' . $lang . ' as title', 'description_' . $lang . ' as description', 'date', 'address_' . $lang . ' as address', 'started_at', 'stopped_at')
             ->where([['archive_id', 7], ['status', 'active']])->orderBy('id', 'ASC')
             ->whereDate('date', '=', \Carbon\Carbon::parse('15.11.2024'))
             ->get();
 
-        $schedule_day_3 = Schedule::select('id', 'title_'.$lang.' as title','description_' . $lang . ' as description', 'date', 'address_'.$lang.' as address', 'started_at', 'stopped_at')
+        $schedule_day_3 = Schedule::select('id', 'title_' . $lang . ' as title', 'description_' . $lang . ' as description', 'date', 'address_' . $lang . ' as address', 'started_at', 'stopped_at')
             ->where([['archive_id', 7], ['status', 'active']])->orderBy('id', 'ASC')
             ->whereDate('date', '=', \Carbon\Carbon::parse('16.11.2024'))
             ->get();
 
         $news = News::select('id', DB::raw('SUBSTRING(`title_' . $lang . '`, 1, 50) as title'), 'image', 'created_at')
-        ->where('category_id', 1)
-        ->where('status', '=', 'active')->orderBy('created_at', 'DESC')->take(3)->get();
+            ->where('category_id', 1)
+            ->where('status', '=', 'active')->orderBy('created_at', 'DESC')->take(3)->get();
 
         $photo_galleries = InnoGallery::select('id', 'archive_id', 'image', 'created_at')->where([['archive_id', 7], ['youtube_url', '=', null]])->orderBy('created_at', 'DESC')->take(12)->get();
         $video_galleries = InnoGallery::select('id', 'archive_id', 'youtube_url', 'created_at')->where([['archive_id', 7], ['youtube_url', '!=', null]])->orderBy('created_at', 'DESC')->take(12)->get();
 
         $statistics = Statistic::select('id', 'name_' . $lang . ' as name', 'icon', 'statistic', 'created_at')->where('status', '=', 'active')->orderBy('created_at', 'DESC')->latest()->get();
 
-        $speakers = Speaker::select('id', 'full_name_'. $lang. ' as full_name', 'image', 'job_' . $lang . ' as position', 'created_at')->where('archive_id', 7)->where('status', '=', 'active')->orderBy('id', 'ASC')->take(12)->get();
+        $speakers = Speaker::select('id', 'full_name_' . $lang . ' as full_name', 'image', 'job_' . $lang . ' as position', 'created_at')->where('archive_id', 7)->where('status', '=', 'active')->orderBy('id', 'ASC')->take(12)->get();
         return view('front.index', compact('countries', 'professions', 'news', 'speakers', 'photo_galleries', 'video_galleries', 'statistics', 'schedule_day_1', 'schedule_day_2', 'schedule_day_3'));
     }
 

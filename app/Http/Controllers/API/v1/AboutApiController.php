@@ -27,7 +27,7 @@ class AboutApiController extends Controller
             $inputs = $request->all();
             $status = $inputs["status"] ?? 'active';
             $lang = $inputs["lang"] ?? 'uz';
-            $data = About::select('description_' . $lang . ' as description', 'image','file_1', 'file_2', 'created_at')
+            $data = About::select('description_' . $lang . ' as description', 'image', 'file_1', 'file_2', 'created_at')
                 ->where([
                     ['status', $status],
                 ])->paginate(1);
@@ -58,10 +58,10 @@ class AboutApiController extends Controller
             $lang = $inputs["lang"] ?? 'uz';
             $archive_id = $inputs["archive_id"] ?? 'uz';
             $data = Schedule::select('date')
-            ->where([
-                ['archive_id', $archive_id],
-                ['status', $status],
-            ])->groupBy('date')->paginate(10);
+                ->where([
+                    ['archive_id', $archive_id],
+                    ['status', $status],
+                ])->groupBy('date')->paginate(10);
 
             if (empty($data)) {
                 $message = "Nimadir xato bajarildi! iltimos ma'lumotlarni qayta tekshirib ko'ring.";
@@ -86,10 +86,10 @@ class AboutApiController extends Controller
             $archive_id = $inputs["archive_id"] ?? 7;
             $date = $inputs["date"] ?? null;
 
-            $data = Schedule::select('id', 'title_'.$lang.' as title','description_' . $lang . ' as description', 'date', 'address_'.$lang.' as address', 'started_at', 'stopped_at')
-            ->where([['archive_id', $archive_id], ['status', $status]])->orderBy('started_at', 'ASC')
-            ->whereDate('date', '=', \Carbon\Carbon::parse($date))
-            ->paginate(50);
+            $data = Schedule::select('id', 'title_' . $lang . ' as title', 'description_' . $lang . ' as description', 'date', 'address_' . $lang . ' as address', 'started_at', 'stopped_at')
+                ->where([['archive_id', $archive_id], ['status', $status]])->orderBy('started_at', 'ASC')
+                ->whereDate('date', '=', \Carbon\Carbon::parse($date))
+                ->paginate(50);
 
             if (empty($data)) {
                 $message = "Nimadir xato bajarildi! iltimos ma'lumotlarni qayta tekshirib ko'ring.";
@@ -113,11 +113,11 @@ class AboutApiController extends Controller
             $typeID = $inputs["type_id"] ?? 1;
             $archiveID = $inputs["archive_id"] ?? 7;
             $data = LiveVideos::select('id', 'title_' . $lang . ' as title', 'type_id', 'date', 'started_at', 'youtube_url', 'created_at')
-            ->where([
-                ['status', $status],
-                ['type_id', $typeID],
-                ['archive_id', $archiveID],
-            ])->paginate(100);
+                ->where([
+                    ['status', $status],
+                    ['type_id', $typeID],
+                    ['archive_id', $archiveID],
+                ])->paginate(100);
 
             if (empty($data)) {
                 $message = "Nimadir xato bajarildi! iltimos ma'lumotlarni qayta tekshirib ko'ring.";
@@ -137,10 +137,10 @@ class AboutApiController extends Controller
         try {
             $inputs = $request->all();
             $archiveID = $inputs["archive_id"] ?? 7;
-            $data = InnoGallery::select('id',  'image', 'status', 'archive_id', 'created_at')
-            ->where([
-                ['archive_id', $archiveID],
-            ])->paginate(100);
+            $data = InnoGallery::select('id', 'image', 'status', 'archive_id', 'created_at')
+                ->where([
+                    ['archive_id', $archiveID],
+                ])->paginate(100);
 
             if (empty($data)) {
                 $message = "Nimadir xato bajarildi! iltimos ma'lumotlarni qayta tekshirib ko'ring.";
