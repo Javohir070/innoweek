@@ -20,6 +20,7 @@ Route::post('/checker/info', [ApiController::class, 'GetUserInfo']);//api chipta
 Route::post('/user/check/ticket', [ApiController::class, 'checkUserTicket']);
 Route::get('/members/get/ticket', [ApiController::class, 'getMemberTicket']);
 
+
 Route::controller(PrintController::class)->group(function () {
     Route::post('/register', 'register');
 });
@@ -35,6 +36,8 @@ Route::group(['prefix' => 'v1.0'], function () {
         Route::post('/login/complete', 'login');
 
         Route::post('/user/login', 'loginUser');
+        Route::post('/user/verify', 'verifyUser');
+        Route::post('/forgot-password', 'forgotPassword');
 
         Route::get('/json/countries', 'GetCountryList');
         Route::get('/json/profession', 'GetProfessionsList');
@@ -44,6 +47,7 @@ Route::group(['prefix' => 'v1.0'], function () {
         Route::post('/user/me', 'GetUserInfo');
         Route::post('/user/change-password', 'ChangePassword');
         Route::post('/logout', 'logout');
+        Route::post('/user/event/store',  'storeEventMember');
 
     });
 

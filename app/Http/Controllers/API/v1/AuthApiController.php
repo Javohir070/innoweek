@@ -60,8 +60,6 @@ class AuthApiController extends Controller
         return false;
     }
 
-
-
     public function loginValidate(Request $request)
     {
         try {
@@ -313,6 +311,120 @@ class AuthApiController extends Controller
         }
     }
 
+
+    public function verifyUser(Request $request)
+    {
+        try {
+            $inputs = $request->all();
+
+            $rules = [
+                'phone_or_email' => [
+                    'required',
+                    'string',
+                    function ($attribute, $value, $fail) {
+                        if (!filter_var($value, FILTER_VALIDATE_EMAIL) && !preg_match('/^9\d{8}$/', $value)) {
+                            $fail($attribute . ' maydoni to\'g\'ri email yoki telefon raqam formatida bo\'lishi kerak.');
+                        }
+                    }
+                ],
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return _sendError(422, "Ma'lumotlarda xatolik mavjud", $validator->messages());
+            }
+
+            // Email yoki telefon ekanligini tekshirish
+            $phoneOrEmail = $inputs['phone_or_email'];
+            $user = filter_var($phoneOrEmail, FILTER_VALIDATE_EMAIL)
+                ? User::where('email', $phoneOrEmail)->first()
+                : User::where('phone', $phoneOrEmail)->first();
+
+            if (!$user) {
+                return _sendError(404, "Foydalanuvchi topilmadi");
+            }
+
+            // Tasdiqlash kodi yuborish
+            $verify_code = rand(100000, 999999);
+            if (filter_var($phoneOrEmail, FILTER_VALIDATE_EMAIL)) {
+                Mail::to($phoneOrEmail)->send(new \App\Mail\RegisterMail($verify_code));
+            } else {
+                self::SendSMSVerify($user->phone);
+            }
+
+            return _sendResponse(200, 'Tasdiqlash kodi yuborildi.', [
+                'auth_key' => Crypt::encrypt($verify_code)
+            ]);
+
+        } catch (\Exception $ex) {
+            return _sendError(500, "Xatolik yuz berdi." . $ex->getMessage(), $ex->getTrace());
+        }
+    }
+
+// [
+//     'password' => 'secret123',
+//     'password_confirmation' => 'secret123'
+// ]
+
+    public function forgotPassword(Request $request)
+    {
+        try {
+            $inputs = $request->all();
+
+            $rules = [
+                'phone_or_email' => [
+                    'required',
+                    'string',
+                    function ($attribute, $value, $fail) {
+                        if (!filter_var($value, FILTER_VALIDATE_EMAIL) && !preg_match('/^9\d{8}$/', $value)) {
+                            $fail($attribute . ' maydoni to\'g\'ri email yoki telefon raqam formatida bo\'lishi kerak.');
+                        }
+                    }
+                ],
+                'auth_key' => 'required|string',
+                'access_code' => 'required|string',
+                'password' => 'required|string|min:8|confirmed',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return _sendError(422, "Ma'lumotlarda xatolik mavjud", $validator->messages());
+            }
+
+            if (Crypt::decrypt($inputs['auth_key']) != $inputs['access_code']) {
+                return _sendError(422, "Tasdiqlash kodi noto‘g‘ri kiritildi.");
+            }
+
+            $phoneOrEmail = $inputs['phone_or_email'];
+            $password = $inputs['password'];
+
+            // Foydalanuvchini topish
+            $user = filter_var($phoneOrEmail, FILTER_VALIDATE_EMAIL)
+                ? User::where('email', $phoneOrEmail)->first()
+                : User::where('phone', $phoneOrEmail)->first();
+
+            if (!$user) {
+                return _sendError(404, "Foydalanuvchi topilmadi.");
+            }
+
+            // Parolni yangilash
+            $user->password = bcrypt($password);
+            $user->save();
+
+            // Avtomatik login qilish (masalan, Laravel Sanctum orqali)
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return _sendResponse(200, 'Parol muvaffaqiyatli yangilandi va login qilindi.', [
+                'token' => $token,
+                'user' => $user
+            ]);
+
+        } catch (\Exception $ex) {
+            return _sendError(500, "Xatolik yuz berdi. " . $ex->getMessage(), $ex->getTrace());
+        }
+    }
+
+
     public function loginUser(Request $request)
     {
         try {
@@ -369,7 +481,8 @@ class AuthApiController extends Controller
         try {
             $inputs = $request->all();
             $limit = $inputs['limit'] ?? 300;
-            $data = Country::select('id', 'name_uz as name')->where([['status', 'active']])->orderBy('id', 'ASC')->paginate($limit);
+            $lang = $inputs['lang'] ?? 'uz';
+            $data = Country::select('id', 'name_' . $lang . ' as name')->where([['status', 'active']])->orderBy('id', 'ASC')->paginate($limit);
 
             return response()->json(new GetDataCollection($data), 201);
             //return _sendResponse(201, $message, $data);
