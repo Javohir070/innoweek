@@ -5,6 +5,7 @@ use App\Http\Controllers\Front\MarketplaceController;
 use App\Http\Controllers\Front\SiteController;
 use App\Http\Controllers\Front\UserController as FrontUserController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\Panel\About\AboutController;
 use App\Http\Controllers\Panel\Area\AreaProjectsController;
 use App\Http\Controllers\Panel\Area\PAreaController;
@@ -178,6 +179,10 @@ Route::group(['prefix' => 'cp', 'middleware' => ['auth:sanctum']], function () {
         Route::post('/live/store', 'storeData')->name('admin.live.store');
         Route::get('/live/destroy', 'destroyData')->name('admin.live.destroy');
     });
+
+    // Route::controller(OfferController::class)->group(function () {
+    //     Route::get('/offer/all', 'index')->name('admin.offers.index');
+    // });
 
 });
 

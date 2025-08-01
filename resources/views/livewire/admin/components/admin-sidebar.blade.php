@@ -37,7 +37,7 @@
                         <li class="{{ Request::routeIs('admin.about.*') ? 'active' : '' }}"><a href="{{ route('admin.about.info', ['data_id' => 1]) }}"><i data-feather="rss"></i><span>Veb sayt ma'lumotlari</span></a></li>
 
                         <li class="{{ Request::routeIs('admin.statistic.*') ? 'active' : '' }}"><a href="{{ route('admin.statistic.index') }}"><i data-feather="rss"></i><span>Statistika ro'yxati</span></a></li>
-                     
+
                         <li class="{{ Request::routeIs('admin.live.*') ? 'active' : '' }}">
                             <a href="{{ route('admin.live.index') }}"><i data-feather="rss"></i><span>Live</span></a>
                         </li>
@@ -51,7 +51,9 @@
                         <li class="{{ Request::routeIs('admin.speakers.*') ? 'active' : '' }}"><a href="{{ route('admin.speakers.index') }}"><i data-feather="book-open"></i><span>Spikerlar ro'yxati</span></a></li>
 
                         <li class="{{ Request::routeIs('admin.schedules.*') ? 'active' : '' }}"><a href="{{ route('admin.schedules.index') }}"><i data-feather="book-open"></i><span>Tadbirlar ro'yxati</span></a></li>
-                        
+
+                        <li class="{{ Request::routeIs('admin.offers.*') ? 'active' : '' }}"><a href="{{ route('admin.offers.index') }}"><i data-feather="book-open"></i><span>Takliflar ro'yxati</span></a></li>
+
                     </ul>
                 </li>
                 @endrole
@@ -61,9 +63,9 @@
                     <h6 class="submenu-hdr">Mehmonlar boshqaruvi</h6>
                     <ul>
                         <li class="{{ Request::routeIs('admin.guests.*') ? 'active' : '' }}"><a href="{{ route('admin.guests.index') }}"><i data-feather="user"></i><span>Mehmonlar ro'yxati</span></a></li>
-                        
+
                         <li class="{{ Request::routeIs('admin.guests.*') ? 'active' : '' }}"><a href="{{ route('admin.guests.checkers') }}"><i data-feather="user"></i><span>Valyantorlar ro'yxati</span></a></li>
-                      
+
                         <li class="{{ Request::routeIs('admin.events.*') ? 'active' : '' }}"><a href="{{ route('admin.events.members') }}"><i data-feather="book-open"></i><span>Tadbir Mehmonlari</span></a></li>
                     </ul>
                 </li>

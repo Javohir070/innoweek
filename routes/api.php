@@ -6,6 +6,7 @@ use App\Http\Controllers\API\v1\AboutApiController;
 use App\Http\Controllers\API\v1\AuthApiController;
 use App\Http\Controllers\API\v1\MarketplaceAPIController;
 use App\Http\Controllers\API\v1\NewsApiController;
+use App\Http\Controllers\APi\v1\OfferApiController;
 use App\Http\Controllers\API\v1\SpeakersAPIController;
 use App\Http\Controllers\API\v1\UserApiController;
 use App\Http\Controllers\Front\CertificateController;
@@ -88,6 +89,10 @@ Route::group(['prefix' => 'v1.0'], function () {
     Route::controller(MarketplaceAPIController::class)->group(function () {
         Route::post('marketplace/all', 'GetAllProducts');
         Route::post('marketplace/list/categories', 'GetProjectCategoryList');
+    });
+
+    Route::controller(OfferApiController::class)->group(function () {
+        Route::post('offer/store', 'storeOffer');
     });
 
 });
