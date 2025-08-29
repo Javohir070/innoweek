@@ -25,7 +25,7 @@ class SpeakersAPIController extends Controller
             $lang = $inputs["lang"] ?? 'uz';
             $ArchiveID = $inputs["archive_id"] ?? 7;
             $limit = $inputs["limit"] ?? 10;
-            $data = Speaker::select('full_name_' . $lang . ' as full_name', 'job_' . $lang . ' as position', 'image', 'created_at')
+            $data = Speaker::with('country')->select('full_name_' . $lang . ' as full_name', 'job_' . $lang . ' as position', 'country_id', 'image', 'created_at')
                 //->with('author')
                 ->where([
                     ['status', $status],

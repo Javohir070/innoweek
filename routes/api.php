@@ -10,6 +10,9 @@ use App\Http\Controllers\APi\v1\OfferApiController;
 use App\Http\Controllers\API\v1\SpeakersAPIController;
 use App\Http\Controllers\API\v1\UserApiController;
 use App\Http\Controllers\Front\CertificateController;
+use App\Http\Controllers\API\EcoIdeathonController;
+use App\Http\Controllers\API\RegionController;
+use App\Http\Controllers\API\ScienceIdController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,11 +23,16 @@ Route::post('/checker/login', [ApiController::class, 'loginChecker']);//api chip
 Route::post('/checker/info', [ApiController::class, 'GetUserInfo']);//api chipta info tekshirish
 Route::post('/user/check/ticket', [ApiController::class, 'checkUserTicket']);
 Route::get('/members/get/ticket', [ApiController::class, 'getMemberTicket']);
-
+Route::get('/members/get/stats', [ApiController::class, 'getStats']);
+Route::get('/regions/all', [RegionController::class, 'getAllRegions']);//api regionlar ro'yxati
 
 Route::controller(PrintController::class)->group(function () {
     Route::post('/register', 'register');
 });
+
+Route::get('scienceid/{scienceid}',[ScienceIdController::class, 'getScienceId']);
+Route::get('get/eco-ideathon/all', [EcoIdeathonController::class, 'getAllEcoIdeathons']);
+Route::resource('eco-ideathon', EcoIdeathonController::class);
 
 //, 'middleware' => ['auth:sanctum']]
 Route::group(['prefix' => 'v1.0'], function () {

@@ -30,7 +30,7 @@
 <form action="{{ route('admin.speakers.store') }}" method="POST" enctype="multipart/form-data" class="was-validated">
     @csrf
     <input type="hidden" name="id" value="{{ $data->id ?? null }}">
-    
+
     <div class="card">
         <div class="card-body">
             <ul class="nav nav-tabs nav-tabs-bottom nav-justified mb-3">
@@ -70,6 +70,22 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="col-lg-3 col-sm-3 col-12">
+                            <div class="input-blocks">
+                                <label>Davlatlar *</label>
+                                <select name="country_id" class="js-example-basic-single select2" required>
+                                    <option value="{{ null }}">- Tanlang -</option>
+                                    @foreach ($countries as $item)
+                                    <option value="{{ $item->id }}" @if (isset($data->country_id) && $data->country_id == $item->id ) selected @endif>{{ $item->name_uz }}</option>
+                                    @endforeach
+                                </select>
+                                @error('country_id')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="col-lg-12 col-sm-12 col-12">
                             <div class="input-blocks">
                                 <label>Lavozim/Professiya *</label>
@@ -87,7 +103,7 @@
                             <label class="form-label">Rasm *</label>
                             <div class="mb-3">
                                 <input type="file" class="form-control" aria-label="file example" name="image" @if (!isset($data->image)) required @endif/>
-                        
+
                                 @if (isset($data->image) && !empty($data->image))
                                 <div><a target="_blank" href="{{ asset($data->image) }}">{{ __("Rasmni ko'rish")}}</a></div>
                                 @endif
@@ -134,7 +150,7 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
                         <div class="col-lg-6 col-sm-6 col-12">
                             <div class="input-blocks">
                                 <label>YouTube URL</label>
@@ -210,7 +226,7 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
                         <div class="col-lg-12 col-sm-12 col-12">
                             <div class="input-blocks">
                                 <label>Lavozim/Professiya (Ingiliz tilida)</label>

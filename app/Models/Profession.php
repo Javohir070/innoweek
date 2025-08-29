@@ -20,4 +20,9 @@ class Profession extends Model
         'created_at' => 'datetime:Y-m-d',
         'updated_at' => 'datetime:Y-m-d',
     ];
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'profession_id');
+    }
 }

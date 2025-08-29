@@ -180,9 +180,9 @@ Route::group(['prefix' => 'cp', 'middleware' => ['auth:sanctum']], function () {
         Route::get('/live/destroy', 'destroyData')->name('admin.live.destroy');
     });
 
-    // Route::controller(OfferController::class)->group(function () {
-    //     Route::get('/offer/all', 'index')->name('admin.offers.index');
-    // });
+    Route::controller(OfferController::class)->group(function () {
+        Route::get('/offer/all', 'index')->name('admin.offers.index');
+    });
 
 });
 

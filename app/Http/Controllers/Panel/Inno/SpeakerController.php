@@ -6,6 +6,7 @@ use App\DataTables\Inno\SpeakerDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\ArchiveYear;
 use App\Models\Inno\Speaker;
+use App\Models\Regions\Country;
 use Illuminate\Http\Request;
 use Auth;
 use Validator;
@@ -41,7 +42,8 @@ class SpeakerController extends Controller
         //     $dataQuery[] = ['id', '!=', $data->id];
         // }
         $archives = ArchiveYear::select('id', 'year as name')->where($dataQuery)->orderBy('year', 'DESC')->get();
-        return  view('admin.speakers.addEditSpeaker', compact('data', 'archives'));
+        $countries = Country::get();
+        return  view('admin.speakers.addEditSpeaker', compact('data', 'archives', 'countries'));
     }
 
 
@@ -72,6 +74,7 @@ class SpeakerController extends Controller
 
             $data->user_id = Auth::user()->id;
             $data->archive_id = $inputs['archive_id'] ?? null;
+            $data->country_id = $inputs['country_id'] ?? null;
             $data->full_name_uz = $inputs['full_name_uz'];
             $data->full_name_ru = $inputs['full_name_ru'];
             $data->full_name_en = $inputs['full_name_en'];

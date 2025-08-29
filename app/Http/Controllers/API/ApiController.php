@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Inno\Schedule;
+use App\Models\Inno\Speaker;
 use App\Models\Profession;
 use App\Models\User;
 use App\Models\UserTicket;
@@ -223,5 +225,36 @@ class ApiController extends Controller
         }
 
         // return  view('front.users.userTicket', compact('data', 'profession'));
+    }
+
+    public function getStats(Request $request)
+    {
+        $user_count = User::count();
+        $male_count = User::where('gender', 1)->whereIn('id', function ($query) {
+            $query->select('user_id')->from('user_tickets');
+        })->count();
+        $female_count = User::where('gender', 2)->count();
+
+        $schedules = Schedule::where('archive_id', 8)->get();
+
+        $speakers = Speaker::where('archive_id', 8)->get();
+
+        $professions = Profession::where('status', 'active')->withCount('users')->get();
+
+        $local_users = User::whereYear('created_at', date('Y'))->whereNotNull('phone')->count();
+
+        return _sendResponse(200, "Statistika", [
+            'user_count' => $user_count,
+            'local_users_count' => $local_users,
+            'foreign_users_count' => $user_count - $local_users,
+            'male_count' => $male_count,
+            'female_count' => $female_count,
+            'schedules_count' => $schedules->count(),
+            'schedules' => $schedules,
+            'speakers_count' => $speakers->count(),
+            'speakers' => $speakers,
+            'professions_count' => $professions->count(),
+            'professions' => $professions
+        ]);
     }
 }
